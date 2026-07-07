@@ -26,25 +26,25 @@ function Sidebar({ selected, onSelect }: SidebarProps) {
           All Clips
         </button>
 
-        <button>
-          <FileText size={16} />
-          Text
-        </button>
+        <button className={selected === "text" ? "active" : ""} onClick={() => onSelect("text")}>
+  <FileText size={16} />
+  Text
+</button>
 
-        <button>
-          <Link size={16} />
-          Links
-        </button>
+        <button className={selected === "link" ? "active" : ""} onClick={() => onSelect("link")}>
+  <Link size={16} />
+  Links
+</button>
 
-        <button>
-          <Image size={16} />
-          Images
-        </button>
+        <button className={selected === "image" ? "active" : ""} onClick={() => onSelect("image")}>
+  <Image size={16} />
+  Images
+</button>
 
-        <button>
-          <Palette size={16} />
-          Colours
-        </button>
+        <button className={selected === "colour" ? "active" : ""} onClick={() => onSelect("colour")}>
+  <Palette size={16} />
+  Colours
+</button>
       </div>
 
       <div className="sidebar-section">

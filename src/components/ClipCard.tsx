@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FileText, Link as LinkIcon, Check } from "lucide-react";
+import { FileText, Link as LinkIcon, Check, Pin, Trash2 } from "lucide-react";
 import { copyToClipboard } from "../services/clipboard";
+import { useClipStore } from "../stores/ClipStore";
 import type { Clip } from "../types/clip";
 
 type ClipCardProps = {
@@ -9,6 +10,7 @@ type ClipCardProps = {
 
 function ClipCard({ clip }: ClipCardProps) {
   const [copied, setCopied] = useState(false);
+  const { togglePin, deleteClip } = useClipStore();
 
   async function handleClick() {
     await copyToClipboard(clip.content);
@@ -27,8 +29,30 @@ function ClipCard({ clip }: ClipCardProps) {
       <div className="clip-body">
         <p className="clip-content">{copied ? "Copied!" : clip.content}</p>
         <span className="clip-meta">
-          {clip.type === "link" ? "Link" : "Text"} · Just now
+          {clip.pinned ? "Pinned" : clip.type === "link" ? "Link" : "Text"} · Just now
         </span>
+      </div>
+
+      <div className="clip-actions">
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            togglePin(clip.id);
+          }}
+          title="Pin"
+        >
+          <Pin size={15} />
+        </button>
+
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            deleteClip(clip.id);
+          }}
+          title="Delete"
+        >
+          <Trash2 size={15} />
+        </button>
       </div>
     </div>
   );

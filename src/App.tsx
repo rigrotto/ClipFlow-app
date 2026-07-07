@@ -4,56 +4,55 @@ import "./App.css";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
-import type { Clip } from "./types/clip";
+import { useClipStore } from "./stores/ClipStore";
+import { initDatabase, saveClip } from "./services/database";
 
 function App() {
   const [selected, setSelected] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const { clips, addClip } = useClipStore();
+  const filteredClips = clips.filter((clip) => {
+  const matchesSearch = clip.content
+    .toLowerCase()
+    .includes(searchQuery.toLowerCase());
 
-  const [clips, setClips] = useState<Clip[]>([
-    {
-      id: "1",
-      type: "text",
-      content: "Hello World",
-      pinned: false,
-      createdAt: new Date(),
-    },
-    {
-      id: "2",
-      type: "link",
-      content: "https://clipflow.app",
-      pinned: false,
-      createdAt: new Date(),
-    },
-    {
-      id: "3",
-      type: "text",
-      content: "npm run tauri dev",
-      pinned: true,
-      createdAt: new Date(),
-    },
-  ]);
+  const matchesFilter =
+    selected === "all" ||
+    selected === clip.type ||
+    (selected === "pinned" && clip.pinned);
+
+  return matchesSearch && matchesFilter;
+});
 
   useEffect(() => {
-  const interval = setInterval(async () => {
-    const newClip = await checkClipboard();
-
-    if (newClip) {
-      setClips((currentClips) => [newClip, ...currentClips]);
-    }
-  }, 500);
-
-  return () => clearInterval(interval);
+  initDatabase();
 }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newClip = await checkClipboard();
+
+      if (newClip) {
+  addClip(newClip);
+  await saveClip(newClip);
+}
+    }, 500);
+console.log("selected:", selected);
+console.log("clips:", clips);
+console.log("filtered:", filteredClips);
+
+    return () => clearInterval(interval);
+  }, [addClip]);
 
   return (
     <div className="app">
       <Sidebar selected={selected} onSelect={setSelected} />
 
-      {selected === "settings" ? (
-        <Settings />
-      ) : (
-        <Home clips={clips} />
-      )}
+      {selected === "settings" ? <Settings /> : <Home
+  clips={filteredClips}
+  searchQuery={searchQuery}
+  setSearchQuery={setSearchQuery}
+/>}
     </div>
   );
 }

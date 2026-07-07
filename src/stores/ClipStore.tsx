@@ -6,14 +6,19 @@ const MAX_HISTORY = 500;
 
 type ClipStore = {
   clips: Clip[];
+  isMonitoring: boolean;
   addClip: (clip: Clip) => void;
   clearClips: () => void;
+  toggleMonitoring: () => void;
+  togglePin: (id: string) => void;
+  deleteClip: (id: string) => void;
 };
 
 const ClipStoreContext = createContext<ClipStore | null>(null);
 
 export function ClipStoreProvider({ children }: { children: ReactNode }) {
   const [clips, setClips] = useState<Clip[]>([]);
+  const [isMonitoring, setIsMonitoring] = useState(true);
 
   function addClip(clip: Clip) {
     setClips((currentClips) => {
@@ -29,8 +34,38 @@ export function ClipStoreProvider({ children }: { children: ReactNode }) {
     setClips([]);
   }
 
+  function toggleMonitoring() {
+    setIsMonitoring((current) => !current);
+  }
+
+  function togglePin(id: string) {
+  setClips((currentClips) =>
+    currentClips
+      .map((clip) =>
+        clip.id === id ? { ...clip, pinned: !clip.pinned } : clip
+      )
+      .sort((a, b) => Number(b.pinned) - Number(a.pinned))
+  );
+}
+
+function deleteClip(id: string) {
+  setClips((currentClips) =>
+    currentClips.filter((clip) => clip.id !== id)
+  );
+}
+
   return (
-    <ClipStoreContext.Provider value={{ clips, addClip, clearClips }}>
+    <ClipStoreContext.Provider
+      value={{
+        clips,
+        isMonitoring,
+        addClip,
+        clearClips,
+        toggleMonitoring,
+        togglePin,
+        deleteClip,
+      }}
+    >
       {children}
     </ClipStoreContext.Provider>
   );
