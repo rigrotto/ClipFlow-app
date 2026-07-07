@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { checkClipboard } from "./services/clipboard";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
-import ClipList from "./components/ClipList";
+import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import type { Clip } from "./types/clip";
 
 function App() {
   const [selected, setSelected] = useState("all");
 
-  const clips: Clip[] = [
+  const [clips, setClips] = useState<Clip[]>([
     {
       id: "1",
       type: "text",
@@ -30,7 +31,19 @@ function App() {
       pinned: true,
       createdAt: new Date(),
     },
-  ];
+  ]);
+
+  useEffect(() => {
+  const interval = setInterval(async () => {
+    const newClip = await checkClipboard();
+
+    if (newClip) {
+      setClips((currentClips) => [newClip, ...currentClips]);
+    }
+  }, 500);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <div className="app">
@@ -39,15 +52,7 @@ function App() {
       {selected === "settings" ? (
         <Settings />
       ) : (
-        <main className="content">
-          <input
-            type="text"
-            placeholder="Search clipboard..."
-            className="search"
-          />
-
-          <ClipList clips={clips} />
-        </main>
+        <Home clips={clips} />
       )}
     </div>
   );
