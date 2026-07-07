@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { copyToClipboard } from "../services/clipboard";
 import type { Clip } from "../types/clip";
 
 type ClipCardProps = {
@@ -5,9 +7,20 @@ type ClipCardProps = {
 };
 
 function ClipCard({ clip }: ClipCardProps) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleClick() {
+    await copyToClipboard(clip.content);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 1000);
+  }
+
   return (
-    <div className="clip">
-      <p>{clip.content}</p>
+    <div className="clip" onClick={handleClick}>
+      <p>{copied ? "✓ Copied!" : clip.content}</p>
     </div>
   );
 }

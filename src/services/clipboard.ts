@@ -1,4 +1,4 @@
-import { readText } from "@tauri-apps/plugin-clipboard-manager";
+import { readText, writeText } from "@tauri-apps/plugin-clipboard-manager";
 import type { Clip } from "../types/clip";
 
 let lastClipboardText = "";
@@ -19,4 +19,8 @@ export async function checkClipboard(): Promise<Clip | null> {
     pinned: false,
     createdAt: new Date(),
   };
+}
+
+export async function copyToClipboard(text: string): Promise<void> {
+  await writeText(text);
 }
