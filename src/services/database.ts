@@ -36,15 +36,15 @@ export async function saveClip(clip: Clip) {
 export async function loadClips(): Promise<Clip[]> {
   if (!db) return [];
 
-  const rows = await db.select<{
-    id: string;
-    type: string;
-    content: string;
-    pinned: number;
-    created_at: string;
-  }[]>(
-    `SELECT * FROM clips ORDER BY created_at DESC`
-  );
+  const rows = await db.select<
+    {
+      id: string;
+      type: string;
+      content: string;
+      pinned: number;
+      created_at: string;
+    }[]
+  >(`SELECT * FROM clips ORDER BY pinned DESC, created_at DESC`);
 
   return rows.map((row) => ({
     id: row.id,
@@ -53,4 +53,28 @@ export async function loadClips(): Promise<Clip[]> {
     pinned: row.pinned === 1,
     createdAt: new Date(row.created_at),
   }));
+}
+
+export async function updateClipPinned(id: string, pinned: boolean) {
+  if (!db) return;
+
+  await db.execute(
+    `UPDATE clips SET pinned = $1 WHERE id = $2`,
+    [pinned ? 1 : 0, id]
+  );
+}
+
+export async function deleteClipFromDatabase(id: string) {
+  if (!db) return;
+
+  await db.execute(
+    `DELETE FROM clips WHERE id = $1`,
+    [id]
+  );
+}
+
+export async function clearClipsFromDatabase() {
+  if (!db) return;
+
+  await db.execute(`DELETE FROM clips`);
 }
