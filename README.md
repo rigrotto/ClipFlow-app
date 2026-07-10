@@ -12,6 +12,17 @@
   Store, search, and instantly reuse everything you copy.
 </p>
 
+<p align="center">
+![Platform](https://img.shields.io/badge/platform-macOS-blue)
+![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-Supported-black?logo=apple)
+![License](https://img.shields.io/github/license/rigrotto/clipflow)
+![Release](https://img.shields.io/github/v/release/rigrotto/clipflow)
+![Downloads](https://img.shields.io/github/downloads/rigrotto/clipflow/total)
+![Issues](https://img.shields.io/github/issues/rigrotto/clipflow)
+![Stars](https://img.shields.io/github/stars/rigrotto/clipflow)
+![Last Commit](https://img.shields.io/github/last-commit/rigrotto/clipflow)
+</p>
+
 ---
 
 ## ✨ Features
