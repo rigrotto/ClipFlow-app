@@ -1,7 +1,7 @@
 # ClipFlow
 
 <p align="center">
-  <img src="docs/logo.png" alt="ClipFlow" width="128">
+  <img src="image (11).png" alt="ClipFlowLogo" width="128">
 </p>
 
 <p align="center">
@@ -10,6 +10,10 @@
 
 <p align="center">
   Store, search, and instantly reuse everything you copy.
+</p>
+
+<p align="center">
+  <img src="screenshot.jpg" alt="ClipFlowApplication" width="600">
 </p>
 
 ---
