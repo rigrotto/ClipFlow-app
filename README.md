@@ -1,7 +1,7 @@
 # ClipFlow
 
 <p align="center">
-  <img src="image (11).png" alt="ClipFlowLogo" width="128">
+  <img src="readme/image (11).png" alt="ClipFlowLogo" width="128">
 </p>
 
 <p align="center">
@@ -10,10 +10,6 @@
 
 <p align="center">
   Store, search, and instantly reuse everything you copy.
-</p>
-
-<p align="center">
-  <img src="screenshot.jpg" alt="ClipFlowApplication" width="600">
 </p>
 
 ---
@@ -97,7 +93,7 @@ The latest version is available from the GitHub Releases page.
 
 ## 📷 Screenshots
 
-> Coming soon
+<img src="readme/screenshot.jpg" alt="ClipFlowApplication" width="600">
 
 ---
 
