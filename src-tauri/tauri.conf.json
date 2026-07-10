@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "clipflow",
+  "productName": "ClipFlow",
   "version": "0.1.0",
   "identifier": "com.clipflow.app",
   "build": {
@@ -11,17 +11,18 @@
   },
   "app": {
     "windows": [
-  {
-    "title": "ClipFlow",
-    "width": 900,
-    "height": 620,
-    "minWidth": 700,
-    "minHeight": 500,
-    "resizable": true,
-    "center": true,
-    "decorations": true
-  }
-],
+      {
+        "label": "main",
+        "title": "ClipFlow",
+        "width": 900,
+        "height": 620,
+        "minWidth": 700,
+        "minHeight": 500,
+        "resizable": true,
+        "center": true,
+        "decorations": true
+      }
+    ],
     "security": {
       "csp": null
     }

@@ -3,13 +3,24 @@ import type { Clip } from "../types/clip";
 
 type ClipListProps = {
   clips: Clip[];
+  selectedIndex: number;
+  setSelectedIndex: (index: number) => void;
 };
 
-function ClipList({ clips }: ClipListProps) {
+function ClipList({
+  clips,
+  selectedIndex,
+  setSelectedIndex,
+}: ClipListProps) {
   return (
     <div className="clip-list">
-      {clips.map((clip) => (
-        <ClipCard key={clip.id} clip={clip} />
+      {clips.map((clip, index) => (
+        <ClipCard
+          key={clip.id}
+          clip={clip}
+          selected={index === selectedIndex}
+          onSelect={() => setSelectedIndex(index)}
+        />
       ))}
     </div>
   );

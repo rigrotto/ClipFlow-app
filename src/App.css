@@ -55,7 +55,7 @@ body,
 }
 
 .sidebar {
-  width: 210px;
+  width: 200px;
   background: var(--sidebar);
   border-right: 1px solid var(--border);
   display: flex;
@@ -302,4 +302,29 @@ body,
   font-weight: 600;
   outline: none;
   cursor: pointer;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 0 28px;
+}
+
+.sidebar-logo {
+  width: 120px;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.clip-image-preview {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-soft);
+  background: var(--control);
 }

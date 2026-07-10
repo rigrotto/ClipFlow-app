@@ -1,5 +1,11 @@
 export type ThemeMode = "system" | "light" | "dark";
 
+export type ImageHistoryRetention =
+  | "never"
+  | "1-day"
+  | "1-week"
+  | "1-month";
+
 export type ClipFlowSettings = {
   // General
   monitoringEnabled: boolean;
@@ -14,6 +20,7 @@ export type ClipFlowSettings = {
   // History
   maxHistory: number;
   removeDuplicates: boolean;
+  imageHistoryRetention: ImageHistoryRetention;
 };
 
 const DEFAULT_SETTINGS: ClipFlowSettings = {
@@ -30,6 +37,7 @@ const DEFAULT_SETTINGS: ClipFlowSettings = {
   // History
   maxHistory: 500,
   removeDuplicates: true,
+  imageHistoryRetention: "1-week",
 };
 
 const STORAGE_KEY = "clipflow-settings";

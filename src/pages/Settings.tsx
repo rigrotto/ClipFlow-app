@@ -63,6 +63,25 @@ function Settings() {
   </select>
 </div>
 
+<div className="settings-card">
+  <div>
+    <h3>Image History</h3>
+    <p>Automatically delete saved images after this time.</p>
+  </div>
+
+  <select
+    value="1-week"
+    onChange={() => {}}
+  >
+    <option value="never">Never</option>
+    <option value="1-day">1 Day</option>
+    <option value="1-week">1 Week</option>
+    <option value="1-month">1 Month</option>
+  </select>
+</div>
+
+
+
       <div className="settings-card">
         <div>
           <h3>Clear History</h3>

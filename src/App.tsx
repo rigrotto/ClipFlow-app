@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 
-import { checkClipboard } from "./services/clipboard";
+import {
+  checkClipboard,
+  copyImageToClipboard,
+  copyToClipboard,
+} from "./services/clipboard";
+
 import {
   initDatabase,
   loadClips,
@@ -17,6 +22,9 @@ import { useClipStore } from "./stores/ClipStore";
 function App() {
   const [selected, setSelected] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const {
     clips,
@@ -24,9 +32,29 @@ function App() {
     setClipsFromDatabase,
     isMonitoring,
     theme,
+    togglePin,
+    deleteClip,
   } = useClipStore();
 
-  // Apply theme
+  const filteredClips = clips.filter((clip) => {
+    const matchesSearch = clip.content
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesFilter =
+      selected === "all" ||
+      selected === clip.type ||
+      (selected === "pinned" && clip.pinned);
+
+    return matchesSearch && matchesFilter;
+  });
+
+  useEffect(() => {
+    if (selectedIndex >= filteredClips.length) {
+      setSelectedIndex(Math.max(filteredClips.length - 1, 0));
+    }
+  }, [filteredClips.length, selectedIndex]);
+
   useEffect(() => {
     const root = document.documentElement;
 
@@ -47,7 +75,6 @@ function App() {
     }
   }, [theme]);
 
-  // Load database
   useEffect(() => {
     async function setupDatabase() {
       await initDatabase();
@@ -58,7 +85,6 @@ function App() {
     setupDatabase();
   }, [setClipsFromDatabase]);
 
-  // Clipboard monitor
   useEffect(() => {
     const interval = setInterval(async () => {
       if (!isMonitoring) return;
@@ -69,29 +95,100 @@ function App() {
         addClip(newClip);
         await saveClip(newClip);
       }
-    }, 500);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [addClip, isMonitoring]);
 
-  const filteredClips = clips.filter((clip) => {
-    const matchesSearch = clip.content
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    async function handleKeyDown(event: KeyboardEvent) {
+      if (selected === "settings") return;
 
-    const matchesFilter =
-      selected === "all" ||
-      selected === clip.type ||
-      (selected === "pinned" && clip.pinned);
+      const currentClip = filteredClips[selectedIndex];
+      const searchIsFocused =
+        document.activeElement === searchRef.current;
 
-    return matchesSearch && matchesFilter;
-  });
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        setSelectedIndex((current) =>
+          Math.min(current + 1, filteredClips.length - 1)
+        );
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setSelectedIndex((current) => Math.max(current - 1, 0));
+        return;
+      }
+
+      if (event.key === "Enter" && currentClip && !searchIsFocused) {
+        event.preventDefault();
+
+        if (currentClip.type === "image" && currentClip.imageDataUrl) {
+          await copyImageToClipboard(currentClip.imageDataUrl);
+        } else {
+          await copyToClipboard(currentClip.content);
+        }
+
+        return;
+      }
+
+      if (
+        event.key.toLowerCase() === "p" &&
+        currentClip &&
+        !searchIsFocused
+      ) {
+        event.preventDefault();
+        await togglePin(currentClip.id);
+        return;
+      }
+
+      if (
+        (event.key === "Delete" || event.key === "Backspace") &&
+        currentClip &&
+        !searchIsFocused
+      ) {
+        event.preventDefault();
+        await deleteClip(currentClip.id);
+        return;
+      }
+
+      if (event.key === "/" && !searchIsFocused) {
+        event.preventDefault();
+        searchRef.current?.focus();
+        return;
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSearchQuery("");
+        searchRef.current?.blur();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    deleteClip,
+    filteredClips,
+    selected,
+    selectedIndex,
+    togglePin,
+  ]);
 
   return (
     <div className="app">
       <Sidebar
         selected={selected}
-        onSelect={setSelected}
+        onSelect={(page) => {
+          setSelected(page);
+          setSelectedIndex(0);
+        }}
       />
 
       {selected === "settings" ? (
@@ -101,6 +198,9 @@ function App() {
           clips={filteredClips}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
+          searchRef={searchRef}
         />
       )}
     </div>

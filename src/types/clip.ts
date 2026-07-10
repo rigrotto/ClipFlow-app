@@ -1,4 +1,4 @@
-export type ClipType = "text" | "link" | "image" | "file";
+export type ClipType = "text" | "link" | "image" | "file" | "colour";
 
 export interface Clip {
   id: string;
@@ -6,4 +6,5 @@ export interface Clip {
   content: string;
   pinned: boolean;
   createdAt: Date;
+  imageDataUrl?: string;
 }

@@ -1,3 +1,4 @@
+import logo from "../assets/logo.png";
 import {
   ClipboardList,
   FileText,
@@ -16,7 +17,9 @@ type SidebarProps = {
 function Sidebar({ selected, onSelect }: SidebarProps) {
   return (
     <aside className="sidebar">
-      <div className="sidebar-title">CLIPFLOW</div>
+      <div className="sidebar-header">
+        <img src={logo} alt="ClipFlow" className="sidebar-logo" />
+      </div>
 
       <div className="sidebar-section">
         <div className="sidebar-label">Library</div>
